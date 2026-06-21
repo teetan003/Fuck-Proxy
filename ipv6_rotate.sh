@@ -32,9 +32,12 @@ generate_random_ipv6() {
 }
 
 # 1. Đọc IP cũ đã gán từ lần trước và xoá nó đi
-if [ -f "$LOG_FILE" ]; old_ip=$(cat "$LOG_FILE" | tr -d '[:space:]'); [ -n "$old_ip" ]; then
-    echo "Đang xoá IPv6 cũ: $old_ip/$SUBNET khỏi cổng $INTERFACE..."
-    ip -6 addr del "$old_ip/$SUBNET" dev "$INTERFACE" 2>/dev/null || true
+if [ -f "$LOG_FILE" ]; then
+    old_ip=$(cat "$LOG_FILE" 2>/dev/null | tr -d '[:space:]')
+    if [ -n "$old_ip" ]; then
+        echo "Đang xoá IPv6 cũ: $old_ip/$SUBNET khỏi cổng $INTERFACE..."
+        ip -6 addr del "$old_ip/$SUBNET" dev "$INTERFACE" 2>/dev/null || true
+    fi
 fi
 
 # 2. Sinh IPv6 mới
