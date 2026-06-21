@@ -38,8 +38,8 @@ cat > config.json <<EOF
 }
 EOF
 
-# 5. Tạo Systemd Service để chạy Python Web Server ngầm ở port 8080
-echo -e "${yellow}Thiết lập dịch vụ chạy ngầm trên cổng 8080...${plain}"
+# 5. Tạo Systemd Service để chạy Python Web Server ngầm ở port 8989
+echo -e "${yellow}Thiết lập dịch vụ chạy ngầm trên cổng 8989...${plain}"
 cat > /etc/systemd/system/fuckproxy-panel.service <<EOF
 [Unit]
 Description=FuckProxy Public Web Panel
@@ -48,8 +48,10 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/usr/local/public_panel
-ExecStart=/usr/bin/python3 -m http.server 8080 --bind 0.0.0.0
+ExecStart=/usr/bin/python3 -m http.server 8989 --bind 0.0.0.0
 Restart=always
+StandardOutput=append:/var/log/fuckproxy-panel.log
+StandardError=append:/var/log/fuckproxy-panel.log
 
 [Install]
 WantedBy=multi-user.target
@@ -60,14 +62,14 @@ systemctl enable fuckproxy-panel
 systemctl restart fuckproxy-panel
 
 # 6. Mở cổng Firewall (Tránh lỗi ERR_CONNECTION_REFUSED)
-echo -e "${yellow}Đang mở khoá cổng 8080 trên Firewall...${plain}"
-iptables -I INPUT -p tcp --dport 8080 -j ACCEPT >/dev/null 2>&1 || true
+echo -e "${yellow}Đang mở khoá cổng 8989 trên Firewall...${plain}"
+iptables -I INPUT -p tcp --dport 8989 -j ACCEPT >/dev/null 2>&1 || true
 iptables-save >/dev/null 2>&1 || true
-ufw allow 8080/tcp >/dev/null 2>&1 || true
+ufw allow 8989/tcp >/dev/null 2>&1 || true
 
 echo -e "${green}═══════════════════════════════════════════${plain}"
 echo -e "${green} Cài đặt Web Panel hoàn tất! ${plain}"
 echo -e "Bạn có thể truy cập bằng trình duyệt tại:"
-echo -e "${yellow} http://$(curl -s4 ip.sb):8080 ${plain}"
-echo -e "Lưu ý: Bạn phải mở khoá (allow) cổng 8080 trên VPS Firewall (nếu có)."
+echo -e "${yellow} http://$(curl -4 -s ip.sb):8989 ${plain}"
+echo -e "Lưu ý: Bạn phải mở khoá (allow) cổng 8989 trên hệ thống Firewall của nhà cung cấp VPS (AWS/Azure/Google Cloud...) nếu có."
 echo -e "${green}═══════════════════════════════════════════${plain}"
