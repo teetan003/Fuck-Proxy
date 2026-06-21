@@ -42,7 +42,10 @@ wget -qO x-ui-linux.tar.gz "https://github.com/mhsanaei/3x-ui/releases/latest/do
 tar -xzf x-ui-linux.tar.gz
 
 # 3. Tạo thư mục và copy file
-echo -e "${yellow}Đang copy các file vào hệ thống...${plain}"
+echo -e "${yellow}Đang dừng service cũ và copy các file mới vào hệ thống...${plain}"
+systemctl stop x-ui 2>/dev/null || true
+killall x-ui 2>/dev/null || true
+
 mkdir -p /usr/local/x-ui
 cp x-ui/x-ui /usr/local/x-ui/
 cp -r x-ui/bin /usr/local/x-ui/
