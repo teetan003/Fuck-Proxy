@@ -23,42 +23,23 @@ if ! command -v go &> /dev/null; then
     apt-get install -y golang
 fi
 
-# 2. Tải mã nguồn, biên dịch Frontend và Go
-echo -e "${yellow}Đang tải mã nguồn và biên dịch 3x-ui...${plain}"
-# Clone repo về thư mục tạm
+# 2. Tải bản cài đặt tối ưu (Pre-compiled)
+echo -e "${yellow}Đang tải phiên bản 3x-ui (đã biên dịch sẵn) từ Github...${plain}"
+arch=$(uname -m)
+case $arch in
+    x86_64) arch="amd64" ;;
+    aarch64) arch="arm64" ;;
+    armv7l) arch="armv7" ;;
+    s390x) arch="s390x" ;;
+    *) echo -e "${red}Không hỗ trợ kiến trúc: $arch${plain}" && exit 1 ;;
+esac
+
 rm -rf /tmp/Fuck-Proxy
-git clone https://github.com/teetan003/Fuck-Proxy.git /tmp/Fuck-Proxy
+mkdir -p /tmp/Fuck-Proxy
 cd /tmp/Fuck-Proxy
-
-# Thêm 2GB Swap tạm thời để tránh lỗi hết RAM khi build frontend
-echo -e "${yellow}Đang tạo 2GB Swap tạm thời để biên dịch...${plain}"
-fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile || true
-
-# Cài đặt Node.js và biên dịch Frontend
-echo -e "${yellow}Đang cài đặt Node.js và biên dịch giao diện Frontend...${plain}"
-apt-get install -y npm
-npm install -g n
-n lts
-hash -r
-# Cập nhật đường dẫn PATH thủ công để bash nhận diện nodejs mới
-export PATH="/usr/local/bin:$PATH"
-cd frontend
-npm install
-npm run build
-cd ..
-mkdir -p internal/web/dist
-cp -r frontend/dist/* internal/web/dist/ || true
-
-# Xóa Swap tạm thời sau khi build xong
-swapoff /swapfile || true
-rm -f /swapfile
-
-# Tối ưu hoá dung lượng file binary cho server yếu
-echo -e "${yellow}Đang biên dịch file thực thi Go...${plain}"
-go build -trimpath -ldflags="-s -w" -o x-ui main.go
+wget -qO x-ui-linux.tar.gz "https://github.com/mhsanaei/3x-ui/releases/latest/download/x-ui-linux-${arch}.tar.gz"
+tar -xzf x-ui-linux.tar.gz
+cd x-ui
 
 # 3. Tạo thư mục và copy file
 echo -e "${yellow}Đang copy các file vào hệ thống...${plain}"
