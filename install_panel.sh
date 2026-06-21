@@ -48,7 +48,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/usr/local/public_panel
-ExecStart=/usr/bin/python3 -m http.server 8080
+ExecStart=/usr/bin/python3 -m http.server 8080 --bind 0.0.0.0
 Restart=always
 
 [Install]
@@ -58,6 +58,12 @@ EOF
 systemctl daemon-reload
 systemctl enable fuckproxy-panel
 systemctl restart fuckproxy-panel
+
+# 6. Mở cổng Firewall (Tránh lỗi ERR_CONNECTION_REFUSED)
+echo -e "${yellow}Đang mở khoá cổng 8080 trên Firewall...${plain}"
+iptables -I INPUT -p tcp --dport 8080 -j ACCEPT >/dev/null 2>&1 || true
+iptables-save >/dev/null 2>&1 || true
+ufw allow 8080/tcp >/dev/null 2>&1 || true
 
 echo -e "${green}═══════════════════════════════════════════${plain}"
 echo -e "${green} Cài đặt Web Panel hoàn tất! ${plain}"
