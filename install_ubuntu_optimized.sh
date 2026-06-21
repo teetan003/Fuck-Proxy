@@ -35,16 +35,17 @@ case $arch in
 esac
 
 rm -rf /tmp/Fuck-Proxy
-mkdir -p /tmp/Fuck-Proxy
+git clone https://github.com/teetan003/Fuck-Proxy.git /tmp/Fuck-Proxy
 cd /tmp/Fuck-Proxy
+
 wget -qO x-ui-linux.tar.gz "https://github.com/mhsanaei/3x-ui/releases/latest/download/x-ui-linux-${arch}.tar.gz"
 tar -xzf x-ui-linux.tar.gz
-cd x-ui
 
 # 3. Tạo thư mục và copy file
 echo -e "${yellow}Đang copy các file vào hệ thống...${plain}"
 mkdir -p /usr/local/x-ui
-cp x-ui /usr/local/x-ui/
+cp x-ui/x-ui /usr/local/x-ui/
+cp -r x-ui/bin /usr/local/x-ui/
 cp x-ui.sh /usr/local/x-ui/
 cp x-ui.sh /usr/bin/x-ui
 chmod +x /usr/local/x-ui/x-ui
