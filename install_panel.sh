@@ -24,12 +24,12 @@ cd /usr/local/public_panel
 
 # 3. Tải giao diện web
 echo -e "${yellow}Tải giao diện Web (index.html)...${plain}"
-wget -qO index.html "https://raw.githubusercontent.com/teetan003/Fuck-Proxy/main/public_panel/index.html"
+wget -4 -qO index.html "https://raw.githubusercontent.com/teetan003/Fuck-Proxy/main/public_panel/index.html" || curl -4 -sLo index.html "https://raw.githubusercontent.com/teetan003/Fuck-Proxy/main/public_panel/index.html"
 
 # 4. Yêu cầu nhập Proxy Link
 echo -e ""
 echo -e "${green}Vui lòng dán Link Proxy (VLESS/VMESS) mà bạn muốn chia sẻ cho người dùng:${plain}"
-read -p "Link Proxy: " proxy_link
+read -p "Link Proxy: " proxy_link < /dev/tty || proxy_link="Chưa thiết lập link"
 
 # Tạo config.json
 cat > config.json <<EOF
