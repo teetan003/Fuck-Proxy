@@ -7,7 +7,7 @@
 # 1. Dải mạng IPv6 của bạn (Chỉ lấy phần đầu, KHÔNG chứa dấu :: ở cuối hay /64)
 # Ví dụ nếu VPS cấp cho bạn IP là 2001:0db8:1234:5678::1/64
 # Thì prefix là: 2001:0db8:1234:5678
-PREFIX="2001:0db8:1234:5678"
+PREFIX="2400:6180:0:d2"
 
 # 2. Tên cổng mạng (Gõ lệnh 'ip a' để xem, thường là eth0, ens3, hoặc venet0)
 INTERFACE="eth0"
