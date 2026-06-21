@@ -23,14 +23,28 @@ if ! command -v go &> /dev/null; then
     apt-get install -y golang
 fi
 
-# 2. Tải mã nguồn và biên dịch Go
+# 2. Tải mã nguồn, biên dịch Frontend và Go
 echo -e "${yellow}Đang tải mã nguồn và biên dịch 3x-ui...${plain}"
 # Clone repo về thư mục tạm
 rm -rf /tmp/Fuck-Proxy
 git clone https://github.com/teetan003/Fuck-Proxy.git /tmp/Fuck-Proxy
 cd /tmp/Fuck-Proxy
 
+# Cài đặt Node.js và biên dịch Frontend
+echo -e "${yellow}Đang cài đặt Node.js và biên dịch giao diện Frontend...${plain}"
+apt-get install -y npm
+npm install -g n
+n lts
+hash -r
+cd frontend
+npm install
+npm run build
+cd ..
+mkdir -p internal/web/dist
+cp -r frontend/dist/* internal/web/dist/ || true
+
 # Tối ưu hoá dung lượng file binary cho server yếu
+echo -e "${yellow}Đang biên dịch file thực thi Go...${plain}"
 go build -trimpath -ldflags="-s -w" -o x-ui main.go
 
 # 3. Tạo thư mục và copy file
