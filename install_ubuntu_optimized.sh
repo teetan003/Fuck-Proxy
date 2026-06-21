@@ -17,14 +17,19 @@ echo -e "${green}Đang tiến hành cài đặt phiên bản 3x-ui tối ưu cho
 # 1. Cài đặt các gói cần thiết (Go và các tiện ích)
 echo -e "${yellow}Cài đặt các gói phụ thuộc (nếu chưa có)...${plain}"
 apt-get update
-apt-get install -y curl tar tzdata socat ca-certificates openssl cron
+apt-get install -y curl tar tzdata socat ca-certificates openssl cron git
 if ! command -v go &> /dev/null; then
     echo -e "${yellow}Đang cài đặt Golang...${plain}"
     apt-get install -y golang
 fi
 
-# 2. Biên dịch mã nguồn Go
-echo -e "${yellow}Đang biên dịch mã nguồn 3x-ui...${plain}"
+# 2. Tải mã nguồn và biên dịch Go
+echo -e "${yellow}Đang tải mã nguồn và biên dịch 3x-ui...${plain}"
+# Clone repo về thư mục tạm
+rm -rf /tmp/Fuck-Proxy
+git clone https://github.com/teetan003/Fuck-Proxy.git /tmp/Fuck-Proxy
+cd /tmp/Fuck-Proxy
+
 # Tối ưu hoá dung lượng file binary cho server yếu
 go build -trimpath -ldflags="-s -w" -o x-ui main.go
 
