@@ -51,8 +51,11 @@ if ip -6 addr add "$new_ip/$SUBNET" dev "$INTERFACE"; then
     # 4. Lưu lại IP mới vào file log để lần sau xoá
     echo "$new_ip" > "$LOG_FILE"
     
-    # (Tuỳ chọn) Bạn có thể thêm lệnh restart proxy ở đây nếu cần, ví dụ:
-    # systemctl restart x-ui
+    # 5. Xuất IP mới ra JSON cho Web Panel
+    if [ -d "/usr/local/public_panel" ]; then
+        current_time=$(date +"%H:%M:%S %d-%m-%Y")
+        echo "{\"ipv6\": \"$new_ip\", \"updated_at\": \"$current_time\"}" > /usr/local/public_panel/status.json
+    fi
 else
     echo "Lỗi: Không thể gán IPv6 $new_ip vào cổng mạng $INTERFACE. Vui lòng kiểm tra lại cấu hình PREFIX và INTERFACE."
     exit 1
